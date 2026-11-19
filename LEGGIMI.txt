@@ -1,0 +1,8 @@
+Il mio stipendio - versione installabile
+
+1. Carica TUTTI i file di questa cartella (index.html, manifest.webmanifest, sw.js, icon-192.png, icon-512.png) su un servizio di hosting che usi HTTPS, per esempio Netlify, GitHub Pages o Cloudflare Pages.
+2. Apri l'indirizzo che ti danno dal telefono.
+3. iPhone (Safari): Condividi, poi Aggiungi alla schermata Home. Android (Chrome): menu con i tre puntini, poi Installa app.
+4. Per portare i dati dalla versione su Claude: nella vecchia versione apri Sezioni, Backup e ripristino, copia il testo; nella nuova versione incollalo e premi Ripristina.
+
+Nota: questa versione salva i dati solo sul dispositivo. La sincronizzazione online funzionava con l'account di Claude e qui non c'e'.

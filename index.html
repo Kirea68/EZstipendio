@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0e1022">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Stipendio">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Il mio stipendio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#0e1022;--card:#181a36;--text:#eeedff;--muted:#9b9dc9;--line:#2a2d58;--hero:linear-gradient(135deg,#4a35d6,#8b3ff0 55%,#d946b8);--hero-t:#fff;--accent:#6e5df0;--ok:#4fe3b5;--bad:#ff7d8f;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.45 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:900px;margin:0 auto;padding:18px 16px 100px}
+h1{font-size:1.15rem;margin:0;font-weight:600}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:12px}
+.muted{color:var(--muted);font-size:.88rem}
+.hero{background:var(--hero);color:var(--hero-t);border-radius:26px 26px 10px 26px;padding:22px 22px 18px}
+.hero .big{font-size:3rem;font-weight:800;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
+.hero .big.neg{color:#ff9d8c}
+.hero small{opacity:.8;font-size:.88rem}
+.bar{height:10px;border-radius:6px;background:rgba(255,255,255,.2);margin:14px 0 10px;overflow:hidden}
+:root[data-theme="dark"] .bar{background:rgba(0,0,0,.15)}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:6px}
+.row2{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.9rem}
+.linkbtn{background:none;border:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer;padding:0;opacity:.9}
+nav{display:flex;gap:6px;margin:0 0 12px}
+nav button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;font:inherit;font-weight:600;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:11px 16px;font:inherit;font-weight:600;cursor:pointer}
+.btn.alt{background:transparent;color:var(--text);border:1px solid var(--line)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sec{background:var(--card);border-radius:16px;padding:6px 14px 8px;margin:12px 0}
+.sec h2{font-size:1rem;margin:10px 0 2px;display:flex;justify-content:space-between;font-weight:600}
+.pay{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.pay:first-of-type{border-top:0}
+.pay input[type=checkbox]{width:22px;height:22px;accent-color:var(--ok);flex:none}
+.pay .n{flex:1;min-width:0}
+.pay .n b{display:block;font-weight:600;overflow-wrap:anywhere}
+.pay.done .n b{text-decoration:line-through;color:var(--muted)}
+.amt{font-variant-numeric:tabular-nums;font-weight:600}
+.late{color:var(--bad);font-weight:600}
+.x{background:none;border:0;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px 8px}
+.empty{color:var(--muted);padding:18px 4px;text-align:center}
+dialog{border:0;border-radius:20px;padding:22px;max-width:420px;width:calc(100% - 28px);background:var(--card);color:var(--text)}
+dialog::backdrop{background:rgba(10,14,28,.6)}
+dialog h3{margin:0 0 6px;font-size:1.2rem}
+label{display:block;margin:12px 0 4px;font-size:.88rem;color:var(--muted)}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit}
+.acts{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.sv{font-size:2.4rem;font-weight:800;letter-spacing:-.02em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{background:var(--card);border-radius:999px;padding:6px 6px 6px 14px;display:flex;align-items:center;gap:2px}
+.add{display:flex;gap:8px;margin:12px 0}
+nav button{font-size:.88rem;padding:10px 4px}
+.grid{display:grid;grid-template-columns:220px 1fr;gap:18px;margin-top:18px;align-items:start}
+.grid>div{min-width:0}
+aside{background:var(--card);border-radius:16px;padding:8px;position:sticky;top:12px}
+aside button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--text);font:inherit;padding:9px 10px 8px;border-radius:10px;cursor:pointer}
+aside button[aria-current="true"]{background:var(--bg);font-weight:600}
+aside .t{display:flex;justify-content:space-between;gap:8px}
+aside .m{display:block;height:4px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden}
+aside .m i{display:block;height:100%;background:var(--accent)}
+@media(max-width:820px){.grid{grid-template-columns:1fr}aside{position:static;display:flex;gap:6px;overflow-x:auto;padding:6px}aside button{flex:none;width:auto;min-width:120px;white-space:nowrap}}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .h{text-align:center;font-size:.8rem;color:var(--muted)}
+.cal .d{min-height:62px;background:var(--card);border-radius:10px;padding:5px 5px 4px;font-size:.82rem;overflow:hidden}
+.cal .d.today{outline:2px solid var(--text)}
+.cal .d.o{background:transparent}
+.cal .p{display:block;margin-top:3px;border-radius:6px;padding:1px 4px;font-size:.72rem;font-weight:600;background:var(--accent);color:#fff;white-space:nowrap}
+.cal .p.ok{background:var(--ok);color:var(--bg)}
+.cal .p.bad{background:var(--bad);color:var(--bg)}
+.cal button.d{border:0;text-align:left;font-family:inherit;color:var(--text);cursor:pointer;width:100%}
+.calnav{display:flex;gap:6px;margin-bottom:10px;align-items:center}
+.calnav select{width:auto;flex:1;min-width:0}
+.calnav .btn{padding:9px 12px}
+.btn:disabled{opacity:.4;cursor:default}
+nav{overflow-x:auto}
+nav button{flex:none;padding:10px 14px}
+.alert{margin-top:12px;padding:8px 12px;background:var(--card);border-left:4px solid var(--accent);border-radius:10px;font-size:.92rem}
+.alert:empty{display:none}
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:18px;border:0;background:var(--accent);color:#fff;font-size:2rem;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.45);z-index:4}
+#toast{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom,0px));background:var(--card);border:1px solid var(--line);padding:10px 16px;border-radius:12px;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.45);white-space:nowrap}
+.hp .pay.done{display:none}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><h1>Il mio stipendio</h1><span class="muted"><span id="sync"></span> <span id="cyc"></span></span></div>
+  <section class="hero" aria-live="polite">
+    <small>Ti restano</small>
+    <div class="big" id="left"></div>
+    <div class="bar"><i id="fill"></i></div>
+    <div class="row2"><span id="l1"></span><span id="l2"></span></div>
+    <div class="row2" style="margin-top:8px" id="l4"></div>
+    <div class="row2" style="margin-top:8px"><span id="l3"></span><button class="linkbtn" id="edSal">Modifica stipendio</button></div>
+  </section>
+  <div id="alert" class="alert" aria-live="polite"></div>
+  <div class="grid"><aside id="side" aria-label="Sezioni"></aside><div>
+  <nav role="tablist">
+    <button role="tab" data-t="pay">Pagamenti</button>
+    <button role="tab" data-t="cal">Calendario</button>
+    <button role="tab" data-t="rate">Rate</button>
+    <button role="tab" data-t="cred">Crediti</button>
+    <button role="tab" data-t="sav">Risparmi</button>
+    <button role="tab" data-t="sec">Sezioni</button>
+  </nav>
+  <div id="view"></div>
+  </div></div>
+</main>
+<button class="fab" id="fab" onclick="fabGo()" aria-label="Aggiungi">+</button>
+<div id="toast" role="status"></div>
+<dialog id="dlg"><div id="dbody"></div></dialog>
+
+<script>
+const KEY="stipendio-v1",EUR=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR"});
+const DEF=["Affitto","Bollette","Prestiti","Pagamenti a rate","Cibo"];
+const MESI=["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+let S=null;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+S=S||{salary:null,sections:DEF.slice(),payments:[],savings:[]};
+const save=()=>{S.at=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}schedPush()};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num=v=>{v=String(v).trim();if(v.includes(","))v=v.replace(/\./g,"").replace(",",".");return parseFloat(v)};
+const fmtD=d=>d.getDate()+" "+MESI[d.getMonth()];
+function keyOf(d){const s=d.getDate()>=15?new Date(d.getFullYear(),d.getMonth(),15):new Date(d.getFullYear(),d.getMonth()-1,15);return s.getFullYear()+"-"+String(s.getMonth()+1).padStart(2,"0")}
+const keyDate=k=>{const [y,m]=k.split("-").map(Number);return new Date(y,m-1,15)};
+const nextStart=k=>{const d=keyDate(k);return new Date(d.getFullYear(),d.getMonth()+1,15)};
+const CUR=keyOf(new Date());
+const mdiff=(a,b)=>{const[x,y]=a.split("-").map(Number),[u,v]=b.split("-").map(Number);return (u-x)*12+(v-y)};
+const shiftKey=(k,n)=>{const[y,m]=k.split("-").map(Number),d=new Date(y,m-1+n,1);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")};
+const vis=(p,k)=>p.kind==="monthly"||(p.kind==="rate"?(d=>d>=0&&d<p.total)(mdiff(p.cycle,k)):p.cycle===k);
+const amtAt=(p,n)=>p.amounts&&p.amounts[n]!=null?p.amounts[n]:p.amount;
+const list=k=>S.payments.filter(p=>vis(p,k)).map(p=>p.kind==="rate"?{...p,amount:amtAt(p,mdiff(p.cycle,k))}:p);
+const isPaid=(p,k)=>!!(p.paid&&p.paid[k]);
+const paidSum=k=>list(k).filter(p=>isPaid(p,k)).reduce((a,p)=>a+p.amount,0);
+function dueDate(p,k){if(p.kind==="once"&&p.date)return toD(p.date);const s=keyDate(k);return p.day>=15?new Date(s.getFullYear(),s.getMonth(),p.day):new Date(s.getFullYear(),s.getMonth()+1,p.day)}
+let tab="pay",filt=null,dayISO="";
+const ISO=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const toD=s=>new Date(s+'T00:00');
+S.payments.forEach(p=>{if(!p.date){const d=p.day?dueDate(p,p.cycle):keyDate(p.cycle);p.date=ISO(d);p.day=d.getDate()}});
+const pdTxt=(p,k)=>{const v=p.paid&&p.paid[k];return typeof v==='string'?', pagato il '+fmtD(toD(v)):''};
+S.credits=S.credits||[];
+const credIn=k=>S.credits.filter(c=>c.received&&keyOf(toD(c.received))===k).reduce((a,c)=>a+c.amount,0);
+const MESI_L=Array.from({length:12},(_,i)=>new Date(2000,i,1).toLocaleDateString('it-IT',{month:'long'}));
+const Y0=new Date().getFullYear()-2,Y1=new Date().getFullYear()+3;
+let cm=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+function occOn(d){
+  const r=[];
+  for(const p of S.payments){
+    const s=toD(p.date);
+    if(d<s)continue;
+    let ok,n=0;
+    if(p.kind==='once')ok=ISO(d)===p.date;
+    else{
+      n=(d.getFullYear()-s.getFullYear())*12+d.getMonth()-s.getMonth();const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
+      ok=d.getDate()===Math.min(s.getDate(),dim)&&(p.kind==='monthly'||n<p.total);
+    }
+    if(ok)r.push({p:p.kind==='rate'?{...p,amount:amtAt(p,n)}:p,k:p.kind==='once'?p.cycle:keyOf(d)});
+  }
+  return r;
+}
+$('view').onchange=e=>{const t=e.target.dataset;if(t.tg){const[i,k]=t.tg.split('|');toggle(+i,k,'')}else if(t.cr)credGot(+t.cr);else if(t.lim!==undefined){const s=decodeURIComponent(t.lim),v=num(e.target.value);S.limits=S.limits||{};if(v>0)S.limits[s]=v;else delete S.limits[s];save();render()}else if(t.pct){const v=parseInt(e.target.value);if(v>=0&&v<=100){S.pct=v;save()}render()}else if(t.goal!==undefined){const v=num(e.target.value);if(v>0)S.goal=v;else delete S.goal;save();render()}else if(t.ra){const[i,n]=t.ra.split('|'),p=S.payments.find(x=>x.id===+i),v=num(e.target.value);p.amounts=p.amounts||{};if(v>=0&&v!==p.amount)p.amounts[n]=v;else delete p.amounts[n];save();render()}};
+$('view').onclick=e=>{const b=e.target.closest('[data-d]');if(b)dayDlg(b.dataset.d)};
+$('dlg').onchange=e=>{const t=e.target.dataset;if(t.tg){const[i,k]=t.tg.split('|');toggle(+i,k,dayISO)}else if(t.pv){const[i,k]=t.pv.split('|');setPaid(+i,k,e.target.value)}};
+$('dlg').onclick=e=>{const a=e.target.dataset.add;if(a)payDlg(a)};
+$('dlg').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'&&['text','number'].includes(e.target.type)){const b=$('dbody').querySelector('.btn:not(.alt)');if(b){e.preventDefault();b.click()}}});
+const enc=s=>encodeURIComponent(s).replace(/'/g,"%27");
+
+function render(){
+  const cr=credIn(CUR),sal=(S.salary&&S.salary.cycle===CUR?S.salary.amount:0)+cr;
+  const paid=paidSum(CUR),left=sal-paid;
+  const todo=list(CUR).filter(p=>!isPaid(p,CUR)).reduce((a,p)=>a+p.amount,0);
+  const end=new Date(nextStart(CUR).getTime()-864e5);
+  const days=Math.max(0,Math.ceil((nextStart(CUR)-new Date())/864e5));
+  $("cyc").textContent="dal "+fmtD(keyDate(CUR))+" al "+fmtD(end);
+  const el=$("left");el.textContent=EUR.format(left);el.classList.toggle("neg",left<0);
+  $("fill").style.width=(sal>0?Math.min(100,paid/sal*100):0)+"%";
+  $("l1").textContent="Stipendio "+EUR.format(sal-cr)+(cr?" + crediti "+EUR.format(cr):"");
+  $("l2").textContent="Pagato "+EUR.format(paid);
+  const free=left-todo;$("l4").textContent=free>=0?"Dopo tutti i pagamenti ti avanzano "+EUR.format(free)+", circa "+EUR.format(free/Math.max(days,1))+" al giorno":"Mancano "+EUR.format(-free)+" per coprire i pagamenti previsti";
+  $("l3").textContent="Ancora da pagare "+EUR.format(todo)+", nuovo stipendio tra "+days+(days===1?" giorno":" giorni");
+  alertBar();document.querySelectorAll("nav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===tab));
+  $("side").innerHTML=sideView();$("view").className=hidePaid&&tab==="pay"?"hp":"";$("fab").style.display=tab==="sec"||tab==="sav"?"none":"flex";
+  $("view").innerHTML=tab==="pay"?payView():tab==="cal"?calView():tab==="rate"?rateView():tab==="cred"?credView():tab==="sav"?savView():secView();
+}
+
+function payView(){
+  const groups=filt?[filt]:S.sections.slice();
+  const orphan=list(CUR).filter(p=>!S.sections.includes(p.section));
+  if(orphan.length&&!filt)groups.push("Senza sezione");
+  let h='<button class="btn" onclick="payDlg()">Nuovo pagamento</button> <button class="btn alt" onclick="quickDlg()">Spesa veloce</button> <button class="btn alt" onclick="togHP()">'+(hidePaid?'Mostra tutti':'Nascondi pagati')+'</button>';
+  let any=false;
+  for(const g of groups){
+    const items=list(CUR).filter(p=>g==="Senza sezione"?!S.sections.includes(p.section):p.section===g)
+      .sort((a,b)=>(a.day||99)-(b.day||99));
+    if(!items.length)continue;any=true;
+    const tot=items.reduce((a,p)=>a+p.amount,0);
+    h+='<div class="sec"><h2><span>'+ico(g)+' '+esc(g)+'</span><span class="amt'+limCls(g,tot)+'">'+EUR.format(tot)+limTxt(g)+'</span></h2>';
+    for(const p of items){
+      const d=isPaid(p,CUR),late=!d&&p.day&&new Date()>new Date(dueDate(p,CUR).getTime()+864e5);
+      const sub=(p.kind==="monthly"?"Ogni mese":p.kind==="rate"?"Rata "+(mdiff(p.cycle,CUR)+1)+" di "+p.total:"Solo questo ciclo")+(", scade il "+fmtD(dueDate(p,CUR))+pdTxt(p,CUR));
+      h+='<div class="pay'+(d?" done":"")+'"><input type="checkbox" aria-label="Segna come pagato" '+(d?"checked":"")+' onchange="toggle('+p.id+')"><div class="n"><b>'+esc(p.name)+'</b><span class="muted'+(late?" late":"")+'">'+sub+(late?", in ritardo":"")+'</span></div><span class="amt">'+EUR.format(p.amount)+'</span><button class="x" aria-label="Modifica" onclick="editDlg('+p.id+')">✎</button><button class="x" aria-label="Elimina" onclick="delPay('+p.id+')">×</button></div>';
+    }
+    h+="</div>";
+  }
+  if(!any)h+='<p class="empty">Nessun pagamento per questo ciclo. Aggiungi affitto, bollette, rate o una spesa per il cibo.</p>';
+  return h;
+}
+function savView(){
+  const tot=S.savings.reduce((a,s)=>a+s.a,0);
+  let h='<div class="sec" style="padding:16px 14px"><span class="muted">Messi da parte finora</span><div class="sv">'+EUR.format(tot)+'</div>'+(S.goal?'<div class="bar" style="margin:10px 0 4px"><i style="width:'+Math.min(100,tot/S.goal*100)+'%"></i></div><span class="muted">Obiettivo '+EUR.format(S.goal)+': raggiunto al '+Math.round(tot/S.goal*100)+'%</span>':'')+'<label for="pc" style="margin-top:14px">Percentuale dell’avanzo da mettere da parte a fine ciclo</label><input id="pc" inputmode="numeric" style="width:90px" value="'+PCT()+'" data-pct="1"><label for="gl">Obiettivo di risparmio in euro (facoltativo)</label><input id="gl" inputmode="decimal" style="width:140px" value="'+(S.goal?S.goal.toFixed(2).replace('.',','):'')+'" data-goal="1"></div>';
+  if(!S.savings.length)return h+'<p class="empty">Alla chiusura del ciclo ti chiederò se vuoi mettere da parte il 75% di quello che avanza.</p>';
+  h+='<div class="sec">';
+  for(const s of S.savings.slice().reverse())h+='<div class="pay"><div class="n"><b>'+esc(s.note)+'</b><span class="muted">'+fmtD(new Date(s.d))+" "+new Date(s.d).getFullYear()+'</span></div><span class="amt">'+EUR.format(s.a)+'</span></div>';
+  return h+"</div>";
+}
+function secView(){
+  let h='<div class="add"><input id="newSec" placeholder="Nuova sezione, per esempio Abbonamenti" aria-label="Nome nuova sezione"><button class="btn" onclick="addSec()">Aggiungi</button></div><div class="chips">';
+  for(const s of S.sections)h+='<span class="chip">'+esc(s)+'<button class="x" aria-label="Rimuovi '+esc(s)+'" onclick="delSec(\''+enc(s)+'\')">×</button></span>';
+  h+='</div><p class="muted">Se togli una sezione, i suoi pagamenti restano visibili sotto “Senza sezione”.</p>';
+  h+=limBlock();h+='<div style="margin-top:22px"><button class="btn alt" onclick="closeFlow()">Chiudi il ciclo adesso</button> <button class="btn alt" onclick="bkDlg()">Backup e ripristino</button><p class="muted">Utile per provare il passaggio al nuovo stipendio senza aspettare il 15.</p></div>';
+  return h;
+}
+
+function sideView(){
+  const all=list(CUR),sum=all.reduce((a,p)=>a+p.amount,0),tot=sum||1;
+  const row=(name,val,key)=>'<button aria-current="'+(filt===key)+'" onclick="setFilt('+(key===null?"null":"'"+enc(key)+"'")+')"><span class="t"><span>'+(key===null?'':ico(name)+' ')+esc(name)+'</span><span class="amt">'+EUR.format(val)+'</span></span><span class="m"><i style="width:'+(val/tot*100)+'%"></i></span></button>';
+  return row("Tutte",sum,null)+S.sections.map(s=>row(s,all.filter(p=>p.section===s).reduce((a,p)=>a+p.amount,0),s)).join("");
+}
+function setFilt(e){filt=e===null?null:decodeURIComponent(e);tab="pay";render()}
+function calViewOld(){
+  const s=keyDate(CUR),n=Math.round((nextStart(CUR)-s)/864e5),off=(s.getDay()+6)%7,today=new Date().toDateString(),t0=new Date().setHours(0,0,0,0);
+  const items=list(CUR).filter(p=>p.day&&(!filt||p.section===filt)).map(p=>({p,d:dueDate(p,CUR)}));
+  let h='<div class="cal">'+"LMMGVSD".split("").map(c=>'<span class="h">'+c+"</span>").join("");
+  for(let i=0;i<off;i++)h+='<span class="d o"></span>';
+  for(let i=0;i<n;i++){
+    const d=new Date(s.getFullYear(),s.getMonth(),s.getDate()+i),its=items.filter(x=>x.d.toDateString()===d.toDateString());
+    let pill="";
+    if(its.length){const all=its.every(x=>isPaid(x.p,CUR)),late=!all&&d<t0;pill='<span class="p '+(all?"ok":late?"bad":"")+'">'+Math.round(its.reduce((a,x)=>a+x.p.amount,0))+" €</span>"}
+    h+='<span class="d'+(d.toDateString()===today?" today":"")+'"><b>'+d.getDate()+"</b>"+pill+"</span>";
+  }
+  h+='</div><div class="sec" style="margin-top:14px"><h2>Scadenze del ciclo</h2>';
+  items.sort((a,b)=>a.d-b.d);
+  if(!items.length)h+='<p class="empty">Aggiungi un giorno di scadenza ai pagamenti per vederli nel calendario.</p>';
+  for(const {p,d} of items){const dn=isPaid(p,CUR);h+='<div class="pay'+(dn?" done":"")+'"><input type="checkbox" aria-label="Segna come pagato" '+(dn?"checked":"")+' onchange="toggle('+p.id+')"><div class="n"><b>'+esc(p.name)+'</b><span class="muted">'+fmtD(d)+", "+esc(p.section)+'</span></div><span class="amt">'+EUR.format(p.amount)+"</span></div>"}
+  h+="</div>";
+  const nod=list(CUR).filter(p=>!p.day&&(!filt||p.section===filt));
+  if(nod.length)h+='<p class="muted">Senza scadenza: '+nod.map(p=>esc(p.name)).join(", ")+".</p>";
+  return h;
+}
+function calGo(n){const d=new Date(cm.getFullYear(),cm.getMonth()+n,1);if(d.getFullYear()<Y0||d.getFullYear()>Y1)return;cm=d;render()}
+function calSet(){cm=new Date(+$('cy').value,+$('cmn').value,1);render()}
+function calToday(){const n=new Date();cm=new Date(n.getFullYear(),n.getMonth(),1);render()}
+function calView(){
+  const y=cm.getFullYear(),m=cm.getMonth(),n=new Date(y,m+1,0).getDate(),off=(cm.getDay()+6)%7,today=ISO(new Date());
+  let h=`<div class='calnav'><button class='btn alt' aria-label='Mese precedente' onclick='calGo(-1)' ${y===Y0&&m===0?'disabled':''}>‹</button><select id='cmn' aria-label='Mese' onchange='calSet()'>${MESI_L.map((x,i)=>`<option value='${i}' ${i===m?'selected':''}>${x}</option>`).join('')}</select><select id='cy' aria-label='Anno' onchange='calSet()'>`;
+  for(let a=Y0;a<=Y1;a++)h+=`<option ${a===y?'selected':''}>${a}</option>`;
+  h+=`</select><button class='btn alt' aria-label='Mese successivo' onclick='calGo(1)' ${y===Y1&&m===11?'disabled':''}>›</button><button class='btn alt' onclick='calToday()'>Oggi</button></div><div class='cal'>`+'LMMGVSD'.split('').map(c=>`<span class='h'>${c}</span>`).join('');
+  for(let i=0;i<off;i++)h+=`<span class='d o'></span>`;
+  const rows=[];
+  for(let i=1;i<=n;i++){
+    const d=new Date(y,m,i),iso=ISO(d),oc=occOn(d).filter(x=>!filt||x.p.section===filt);
+    let pill='';
+    if(oc.length){const all=oc.every(x=>x.p.paid&&x.p.paid[x.k]),late=!all&&iso<today;pill=`<span class='p ${all?'ok':late?'bad':''}'>${Math.round(oc.reduce((a,x)=>a+x.p.amount,0))} €</span>`;oc.forEach(x=>rows.push({...x,d}))}
+    h+=`<button class='d${iso===today?' today':''}' data-d='${iso}' aria-label='${i} ${MESI_L[m]}'><b>${i}</b>${pill}</button>`;
+  }
+  h+=`</div><div class='sec' style='margin-top:14px'><h2><span>Scadenze di ${MESI_L[m]} ${y}</span><span class='amt'>${EUR.format(rows.reduce((a,x)=>a+x.p.amount,0))}</span></h2>`;
+  if(!rows.length)h+=`<p class='empty'>Nessuna scadenza in questo mese. Tocca un giorno per aggiungere un pagamento.</p>`;
+  for(const {p,k,d} of rows){const pv=p.paid&&p.paid[k];h+=`<div class='pay${pv?' done':''}'><input type='checkbox' aria-label='Segna come pagato' ${pv?'checked':''} data-tg='${p.id}|${k}'><div class='n'><b>${esc(p.name)}</b><span class='muted'>${fmtD(d)}, ${esc(p.section)}${pdTxt(p,k)}</span></div><span class='amt'>${EUR.format(p.amount)}</span></div>`}
+  return h+'</div>';
+}
+function dayDlg(iso){
+  dayISO=iso;
+  const d=toD(iso),oc=occOn(d);
+  let h=`<h3>${d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</h3>`;
+  if(!oc.length)h+=`<p class='muted'>Nessun pagamento in questo giorno.</p>`;
+  for(const {p,k} of oc){const pv=p.paid&&p.paid[k];h+=`<div class='pay'><input type='checkbox' aria-label='Segna come pagato' ${pv?'checked':''} data-tg='${p.id}|${k}'><div class='n'><b>${esc(p.name)}</b><span class='muted'>${esc(p.section)}</span>${pv?`<label style='margin:6px 0 0'>Pagato il <input type='date' style='width:auto;padding:5px' data-pv='${p.id}|${k}' value='${typeof pv==='string'?pv:iso}'></label>`:''}</div><span class='amt'>${EUR.format(p.amount)}</span></div>`}
+  h+=`<div class='acts'><button class='btn alt' onclick='dlg.close()'>Chiudi</button><button class='btn' data-add='${iso}'>Aggiungi pagamento</button></div>`;
+  open(h);
+}
+function setPaid(id,k,v){const p=S.payments.find(x=>x.id===id);if(v){p.paid[k]=v;save()}render();dayDlg(dayISO)}
+function rateView(){
+  const rs=S.payments.filter(p=>p.kind==='rate'),today=ISO(new Date());
+  let h=`<button class='btn' onclick='payDlg()'>Nuovo pagamento</button>`;
+  if(!rs.length)return h+`<p class='empty'>Nessun pagamento a rate. Aggiungine uno scegliendo “Rata con numero di rate”.</p>`;
+  for(const p of rs){
+    const s=toD(p.date);let paidN=0,left=0,rows='';
+    for(let i=0;i<p.total;i++){
+      const dim=new Date(s.getFullYear(),s.getMonth()+i+1,0).getDate(),dt=new Date(s.getFullYear(),s.getMonth()+i,Math.min(s.getDate(),dim)),k=keyOf(dt),pv=p.paid&&p.paid[k],a=amtAt(p,i),late=!pv&&ISO(dt)<today;
+      if(pv)paidN++;else left+=a;
+      rows+=`<div class='pay${pv?' done':''}'><input type='checkbox' aria-label='Segna come pagata' ${pv?'checked':''} data-tg='${p.id}|${k}'><div class='n'><b>Rata ${i+1} di ${p.total}</b><span class='muted${late?' late':''}'>${fmtD(dt)} ${dt.getFullYear()}${late?', in ritardo':''}${pdTxt(p,k)}</span></div><input aria-label='Importo rata ${i+1}' inputmode='decimal' style='width:104px;text-align:right' value='${a.toFixed(2).replace('.',',')}' data-ra='${p.id}|${i}'></div>`;
+    }
+    h+=`<details class='sec' open><summary style='cursor:pointer;padding:10px 0;font-weight:600'>${esc(p.name)} <span class='muted'>(${esc(p.section)}), ${paidN} di ${p.total} pagate, restano ${EUR.format(left)}</span></summary>${rows}<div class='acts'><button class='btn alt' onclick='editDlg(${p.id})'>Modifica</button><button class='btn alt' onclick='delPay(${p.id})'>Elimina pagamento</button></div></details>`;
+  }
+  return h+`<p class='muted'>Per cambiare l’importo di una rata, modifica il valore e premi Invio. Se riscrivi l’importo standard, la rata torna normale.</p>`;
+}
+function credView(){
+  const cs=S.credits.slice().sort((a,b)=>a.date<b.date?-1:1),todo=cs.filter(c=>!c.received).reduce((a,c)=>a+c.amount,0),got=cs.filter(c=>c.received).reduce((a,c)=>a+c.amount,0);
+  let h=`<button class='btn' onclick='credDlg()'>Nuovo credito</button><p class='muted'>Da incassare ${EUR.format(todo)}, già incassati ${EUR.format(got)}. Quando incassi un credito, si somma allo stipendio del ciclo in cui lo ricevi.</p>`;
+  if(!cs.length)return h+`<p class='empty'>Nessun credito. Aggiungi un amico che deve restituirti dei soldi, vecchi risparmi o altre entrate.</p>`;
+  h+=`<div class='sec'>`;
+  for(const c of cs){const g=c.received;h+=`<div class='pay${g?' done':''}'><input type='checkbox' aria-label='Segna come incassato' ${g?'checked':''} data-cr='${c.id}'><div class='n'><b>${esc(c.who)}</b><span class='muted'>${g?'incassato il '+fmtD(toD(g)):'atteso il '+fmtD(toD(c.date))}</span></div><span class='amt'>${EUR.format(c.amount)}</span><button class='x' aria-label='Elimina' onclick='delCred(${c.id})'>×</button></div>`}
+  return h+`</div>`;
+}
+function credDlg(){
+  open(`<h3>Nuovo credito</h3><label for='cw'>Da chi o da cosa</label><input id='cw' placeholder='Marco, vecchi risparmi'><label for='ca'>Importo in euro</label><input id='ca' inputmode='decimal' placeholder='200,00'><label for='cd'>Data prevista</label><input id='cd' type='date' value='${ISO(new Date())}'><div class='acts'><button class='btn alt' onclick='dlg.close()'>Annulla</button><button class='btn' id='cs'>Salva credito</button></div>`);
+  $('cw').focus();
+  $('cs').onclick=()=>{const who=$('cw').value.trim(),a=num($('ca').value),d=$('cd').value;[['cw',!who],['ca',!(a>0)],['cd',!d]].forEach(([i,b])=>$(i).style.borderColor=b?'var(--bad)':'');if(!who||!(a>0)||!d)return;S.credits.push({id:Date.now(),who,amount:a,date:d,received:null});save();dlg.close()};
+}
+function credGot(id){
+  const c=S.credits.find(x=>x.id===id);
+  if(c.received){c.received=null;save();render();return}
+  open(`<h3>Quando l’hai incassato?</h3><p class='muted'>${esc(c.who)}, ${EUR.format(c.amount)}</p><label for='cr'>Data di incasso</label><input id='cr' type='date' value='${ISO(new Date())}'><div class='acts'><button class='btn alt' onclick='dlg.close()'>Annulla</button><button class='btn' id='ck'>Conferma</button></div>`);
+  $('ck').onclick=()=>{c.received=$('cr').value||ISO(new Date());save();dlg.close()};
+}
+function delCred(id){const i=S.credits.findIndex(c=>c.id===id),c=S.credits[i];S.credits.splice(i,1);save();render();toast('Credito eliminato',()=>{S.credits.splice(i,0,c);save();render()})}
+const PCT=()=>S.pct==null?75:S.pct;
+const limTxt=g=>S.limits&&S.limits[g]?' su '+EUR.format(S.limits[g]):'';
+const limCls=(g,t)=>S.limits&&S.limits[g]&&t>S.limits[g]?' late':'';
+function limBlock(){
+  let h=`<div class='sec'><h2>Limiti mensili</h2><p class='muted'>Imposta un tetto per ogni sezione: ti avviso quando i pagamenti del ciclo si avvicinano al limite o lo superano. Lascia vuoto per nessun limite.</p>`;
+  for(const s of S.sections){const v=S.limits&&S.limits[s];h+=`<div class='pay'><div class='n'><b>${esc(s)}</b></div><input aria-label='Limite per ${esc(s)}' inputmode='decimal' style='width:110px;text-align:right' placeholder='nessuno' value='${v?v.toFixed(2).replace('.',','):''}' data-lim='${enc(s)}'></div>`}
+  return h+`</div>`;
+}
+let undo=null,tt,hidePaid=false;
+const ico=s=>{s=s.toLowerCase();const m=[['affitt','🏠'],['bollett','💡'],['prestit','🏦'],['rate','🧾'],['cib','🍝'],['traspor','🚗'],['abbonam','📺'],['salut','💊'],['svag','🎉']].find(([k])=>s.includes(k));return m?m[1]:'🏷️'};
+function toast(msg,fn){clearTimeout(tt);undo=fn;$('toast').innerHTML=esc(msg)+(fn?` <button class='linkbtn' onclick='doUndo()'>Annulla</button>`:'');$('toast').style.display='block';tt=setTimeout(()=>{$('toast').style.display='none';undo=null},7000)}
+function doUndo(){if(undo)undo();$('toast').style.display='none';undo=null}
+function togHP(){hidePaid=!hidePaid;render()}
+function fabGo(){if(tab==='cred')credDlg();else payDlg()}
+function alertBar(){
+  const t0=new Date().setHours(0,0,0,0);let late=0,soon=0,tot=0;
+  for(const p of list(CUR)){if(isPaid(p,CUR))continue;const dd=dueDate(p,CUR).getTime();if(dd<t0)late++;else if(dd<=t0+7*864e5){soon++;tot+=p.amount}}
+  const m=[];
+  if(late)m.push(`${late} ${late===1?'pagamento in ritardo':'pagamenti in ritardo'}`);
+  if(soon)m.push(`${soon} ${soon===1?'scadenza':'scadenze'} nei prossimi 7 giorni per ${EUR.format(tot)}`);
+  const all=list(CUR);
+  for(const s of S.sections){const l=S.limits&&S.limits[s];if(!l)continue;const v=all.filter(p=>p.section===s).reduce((a,p)=>a+p.amount,0);if(v>l)m.push(`${esc(s)} oltre il limite di ${EUR.format(v-l)}`);else if(v>=l*.8)m.push(`${esc(s)} al ${Math.round(v/l*100)}% del limite`)}
+  $('alert').innerHTML=m.length?`<b>${m.join(', ')}.</b> <button class='linkbtn' onclick='goCal()'>Apri il calendario</button>`:'';
+}
+function goCal(){tab='cal';calToday()}
+function editDlg(id){
+  const p=S.payments.find(x=>x.id===id);
+  open(`<h3>Modifica pagamento</h3><label for='en'>Nome</label><input id='en' value='${esc(p.name)}'><label for='ea'>Importo in euro${p.kind==='rate'?' (rata standard)':''}</label><input id='ea' inputmode='decimal' value='${p.amount.toFixed(2).replace('.',',')}'><label for='es'>Sezione</label><select id='es'>${S.sections.map(s=>`<option ${s===p.section?'selected':''}>${esc(s)}</option>`).join('')}</select><label for='ed'>${p.kind==='once'?'Data di scadenza':'Data della prima scadenza'}</label><input id='ed' type='date' value='${p.date}'>${p.kind==='rate'?`<label for='et'>Numero di rate totali</label><input id='et' type='number' min='1' value='${p.total}'>`:''}<div class='acts'><button class='btn alt' onclick='dlg.close()'>Annulla</button><button class='btn' id='eo'>Salva modifiche</button></div>`);
+  $('eo').onclick=()=>{
+    const n=$('en').value.trim(),a=num($('ea').value),d=$('ed').value,t=p.kind==='rate'?parseInt($('et').value)||0:p.total;
+    if(!n||!(a>0)||!d||(p.kind==='rate'&&t<1))return;
+    Object.assign(p,{name:n,amount:a,section:$('es').value,date:d,day:toD(d).getDate(),cycle:keyOf(toD(d)),total:t});
+    save();dlg.close();
+  };
+}
+function quickDlg(){
+  open(`<h3>Spesa veloce</h3><p class='muted'>Una spesa già pagata oggi, per esempio la spesa al supermercato.</p><label for='qn'>Cosa hai comprato</label><input id='qn'><label for='qa'>Importo in euro</label><input id='qa' inputmode='decimal'><label for='qs'>Sezione</label><select id='qs'>${S.sections.map(s=>`<option ${s==='Cibo'?'selected':''}>${esc(s)}</option>`).join('')}</select><div class='acts'><button class='btn alt' onclick='dlg.close()'>Annulla</button><button class='btn' id='qo'>Aggiungi spesa</button></div>`);
+  $('qn').focus();
+  $('qo').onclick=()=>{
+    const n=$('qn').value.trim(),a=num($('qa').value);
+    if(!n||!(a>0))return;
+    const t=new Date(),iso=ISO(t);
+    S.payments.push({id:Date.now(),name:n,amount:a,section:$('qs').value,kind:'once',total:0,date:iso,day:t.getDate(),cycle:keyOf(t),paid:{[keyOf(t)]:iso}});
+    save();dlg.close();
+  };
+}
+function bkDlg(){
+  open(`<h3>Backup e ripristino</h3><p class='muted'>Copia questo testo e conservalo: contiene tutti i tuoi dati e ti serve per ritrovarli su un altro dispositivo. Per ripristinare, incolla un backup qui sotto e premi Ripristina: i dati attuali verranno sostituiti.</p><textarea id='bk' rows='7' style='width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:12px monospace'>${esc(JSON.stringify(S))}</textarea><p class='muted' id='bm'></p><div class='acts'><button class='btn alt' onclick='dlg.close()'>Chiudi</button><button class='btn alt' id='bc'>Copia</button><button class='btn' id='br'>Ripristina</button></div>`);
+  $('bc').onclick=()=>{
+    $('bk').select();
+    try{navigator.clipboard.writeText($('bk').value).then(()=>{$('bm').textContent='Copiato.'},()=>{$('bm').textContent='Testo selezionato: copialo con Ctrl+C.'})}catch(e){$('bm').textContent='Testo selezionato: copialo a mano.'}
+  };
+  $('br').onclick=()=>{
+    try{
+      const o=JSON.parse($('bk').value);
+      if(!o||!Array.isArray(o.payments)||!Array.isArray(o.sections))throw 0;
+      o.credits=o.credits||[];S=o;save();dlg.close();render();
+      if(!S.salary||S.salary.cycle!==CUR)closeFlow();
+    }catch(e){$('bm').textContent='Questo testo non è un backup valido.'}
+  };
+}
+function toggle(id,k,back){
+  k=k||CUR;const p=S.payments.find(x=>x.id===id);p.paid=p.paid||{};
+  const end=()=>{save();render();if(back)dayDlg(back);else dlg.close()};
+  if(p.paid[k]){delete p.paid[k];end();return}
+  const def=k===CUR?ISO(new Date()):ISO(dueDate(p,k));
+  open(`<h3>Quando l’hai pagato?</h3><p class='muted'>${esc(p.name)}, ${EUR.format(p.kind==='rate'?amtAt(p,mdiff(p.cycle,k)):p.amount)}</p><label for='pw'>Data del pagamento</label><input id='pw' type='date' value='${def}'><div class='acts'><button class='btn alt' id='pc'>Annulla</button><button class='btn' id='po'>Conferma</button></div>`);
+  $('pc').onclick=()=>{render();if(back)dayDlg(back);else dlg.close()};
+  $('po').onclick=()=>{p.paid[k]=$('pw').value||def;end()};
+  $('po').focus();
+}
+function delPay(id){const i=S.payments.findIndex(p=>p.id===id),p=S.payments[i];S.payments.splice(i,1);save();render();toast('Pagamento eliminato',()=>{S.payments.splice(i,0,p);save();render()})}
+function addSec(){const v=$("newSec").value.trim();if(v&&!S.sections.includes(v)){S.sections.push(v);save()}render()}
+function delSec(e){const s=decodeURIComponent(e);if(filt===s)filt=null;S.sections=S.sections.filter(x=>x!==s);save();render()}
+
+const dlg=$("dlg");
+function open(html,locked){$("dbody").innerHTML=html;dlg.onclose=render;dlg.oncancel=locked?e=>e.preventDefault():null;if(!dlg.open)dlg.showModal()}
+function payDlg(iso){iso=iso||ISO(new Date());
+  open('<h3>Nuovo pagamento</h3><label for="pn">Nome</label><input id="pn" placeholder="Bolletta luce"><label for="pa">Importo in euro</label><input id="pa" inputmode="decimal" placeholder="85,50"><label for="ps">Sezione</label><select id="ps">'+S.sections.map(s=>"<option>"+esc(s)+"</option>").join("")+'</select><label for="pk">Quando</label><select id="pk"><option value="monthly">Si ripete ogni mese</option><option value="once">Solo questo ciclo</option><option value="rate">Rata con numero di rate</option></select><div id="rt" style="display:none"><label for="pt">Numero di rate totali</label><input id="pt" type="number" min="1" placeholder="12"></div><label for="pd">Data di scadenza, o della prima rata</label><input id="pd" type="date" value="'+iso+'"><div class="acts"><button class="btn alt" onclick="dlg.close()">Annulla</button><button class="btn" onclick="savePay()">Salva pagamento</button></div>');
+  $("pn").focus();
+  $("pk").onchange=()=>{$("rt").style.display=$("pk").value==="rate"?"block":"none"};
+}
+function savePay(){
+  const name=$("pn").value.trim(),amount=num($("pa").value);
+  if(!name||!(amount>0)){$("pa").style.borderColor="var(--bad)";if(!name)$("pn").style.borderColor="var(--bad)";return}
+  const kind=$("pk").value,total=parseInt($("pt").value)||0,ds=$("pd").value;
+  if(!ds){$("pd").style.borderColor="var(--bad)";return}
+  if(kind==="rate"&&total<1){$("pt").style.borderColor="var(--bad)";return}
+  S.payments.push({id:Date.now(),name,amount,section:$("ps").value,kind,total,date:ds,day:toD(ds).getDate(),cycle:keyOf(toD(ds)),paid:{}});
+  save();dlg.close();render();
+}
+function salaryDlg(old,locked,title){
+  open('<h3>'+title+'</h3><label for="sa">Importo dello stipendio in euro</label><input id="sa" inputmode="decimal" placeholder="1.450,00"><div class="acts">'+(locked?"":'<button class="btn alt" onclick="dlg.close()">Annulla</button>')+'<button class="btn" id="ssave">Conferma</button></div>',locked);
+  $("sa").focus();
+  $("ssave").onclick=()=>{
+    const a=num($("sa").value);if(!(a>=0)||$("sa").value.trim()===""){$("sa").style.borderColor="var(--bad)";return}
+    if(old!==undefined){
+      S.payments=S.payments.filter(p=>!(p.kind==="once"&&p.cycle===old&&isPaid(p,old)));
+      S.payments.forEach(p=>{if(p.kind==="once"&&p.cycle===old)p.cycle=CUR;if(old===CUR&&p.paid)delete p.paid[old]});
+    }
+    S.salary={amount:a,cycle:CUR};save();dlg.close();render();
+  };
+}
+function closeFlow(){
+  const old=S.salary?S.salary.cycle:undefined;
+  const left=old?S.salary.amount+credIn(old)-paidSum(old):0;
+  const title="Stipendio del ciclo che parte il "+fmtD(keyDate(CUR));
+  if(left>0&&PCT()>0){
+    const pc=PCT(),q=Math.round(left*pc)/100;
+    open('<h3>Ciclo concluso</h3><p>Ti sono avanzati <b>'+EUR.format(left)+'</b>. Vuoi mettere da parte il '+pc+'%, cioè <b>'+EUR.format(q)+'</b>, nei Risparmi?</p><div class="acts"><button class="btn alt" id="no">No, grazie</button><button class="btn" id="si">Sì, metti da parte</button></div>',true);
+    $("si").onclick=()=>{S.savings.push({d:new Date().toISOString(),a:q,note:"Avanzo del ciclo dal "+fmtD(keyDate(old))});save();salaryDlg(old,true,title)};
+    $("no").onclick=()=>salaryDlg(old,true,title);
+  }else salaryDlg(old,true,old?title:"Benvenuto! "+title);
+}
+$("edSal").onclick=()=>salaryDlg(undefined,false,"Modifica lo stipendio");
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{tab=b.dataset.t;render()});
+render();
+let ref=null,pt=null,busy=false,dirty=false;
+const setSync=t=>{const e=$('sync');if(e)e.textContent=t};
+const needCycle=()=>{if((!S.salary||S.salary.cycle!==CUR)&&!dlg.open)closeFlow()};
+function schedPush(){if(!ref)return;setSync('Salvataggio…');clearTimeout(pt);pt=setTimeout(push,700)}
+async function push(){
+  if(busy){dirty=true;return}
+  busy=true;
+  try{await ref.set({json:JSON.stringify(S),at:S.at});setSync('Sincronizzato online')}catch(e){dirty=false;setSync('Non sincronizzato, riprovo al prossimo salvataggio')}
+  busy=false;
+  if(dirty){dirty=false;push()}
+}
+function adopt(d){
+  try{const o=JSON.parse(d.json);o.credits=o.credits||[];S=o;S.at=d.at;try{localStorage.setItem(KEY,d.json)}catch(e){}setSync('Sincronizzato online');render()}catch(e){}
+}
+async function initSync(){
+  let done=false;
+  const fin=()=>{if(!done){done=true;needCycle()}};
+  setTimeout(fin,10000);
+  try{
+    const db=await claude.use('db'),user=await claude.use('user');
+    const uid=db&&user?await user.id():null;
+    if(!uid){setSync('Solo su questo dispositivo');fin();return}
+    ref=db.collection('data/users/'+uid).doc('state');
+    setSync('Sincronizzazione…');
+    ref.onSnapshot(snap=>{
+      const d=snap.exists?snap.data():null;
+      if(d&&d.at>(S.at||0))adopt(d);
+      else if(!snap.metadata.fromCache){
+        if(!d){if(S.payments.length||S.salary||S.credits.length){S.at=S.at||Date.now();push()}else setSync('Sincronizzato online')}
+        else if(d.at<(S.at||0))push();
+        else setSync('Sincronizzato online');
+      }
+      if(!snap.metadata.fromCache)fin();
+    },()=>{setSync('Solo su questo dispositivo');ref=null;fin()});
+  }catch(e){setSync('Solo su questo dispositivo');fin()}
+}
+initSync();
+</script>
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+</body>
+</html>
